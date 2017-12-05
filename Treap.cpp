@@ -33,28 +33,30 @@ void insert(Node* &o, int x) {
         int d = (x < o->v ? 0 : 1);
         insert(o->ch[d], x);
         if(o->ch[d]->r > o->r) rotate(o, d^1);
-    	else o->maintain();
     }
+	o->maintain();
 }
 
 void remove(Node* &o, int x) {
 	if(o == NULL) return;
     int d = o->cmp(x);
-    if(d == -1){
-        if(o->flag > 1) o->flag--;
-        else {
-            if(o->ch[0] == NULL) o = o->ch[1];
-            else if(o->ch[1] == NULL) o = o->ch[0];
-            else {
-                int d2 = (o->ch[0]->r > o->ch[1]->r ? 1 : 0);
-                rotate(o, d2); remove(o->ch[d2], x);
-            }
-		if(o != NULL) o->maintain();
-        }
-    } else{
-        remove(o->ch[d], x);
-		if(o != NULL) o->maintain();
+	if(d == -1) {
+		if(o->flag > 1) o->flag--;
+		else {
+			Node* u = o;
+			if(o->ch[0] && o->ch[1]) {
+				int d2 = (o->ch[0]->r < o->ch[1]->r) ? 0 : 1;
+				rotate(o, d2); remove(o->ch[d2], x);
+			}
+			else {
+				if(o->ch[0] == NULL) o = o->ch[1];
+				else o = o->ch[0];
+				delete u;
+			}
+		}
 	}
+	else remove(o->ch[d], x);
+	if(o != NULL) o->maintain();
 }
 
 int kth(Node* o, int k) {
@@ -95,7 +97,6 @@ void succ(Node* o, int k, int &ans) {
 
 int main(){
     int T;
-	srand(1000);
     scanf("%d", &T);
     while(T--){
         int a, b;
