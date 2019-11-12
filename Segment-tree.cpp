@@ -1,4 +1,4 @@
-#include <cstdio>
+ #include <cstdio>
 typedef long long ll;
 
 const int maxn = 100000 + 10;
